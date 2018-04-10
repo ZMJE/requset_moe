@@ -1,11 +1,11 @@
 #include "reg51.h"
-#include "intrins.h"     //_nop_();ÑÓÊ±º¯ÊıÓÃ
-#define  Disdata    P0   //¶ÎÂëÊä³ö¿Ú
-#define  discan     P2   //É¨Ãè¿Ú
+#include "intrins.h"     //_nop_();å»¶æ—¶å‡½æ•°ç”¨
+#define  Disdata    P0   //æ®µç è¾“å‡ºå£
+#define  discan     P2   //æ‰«æå£
 #define uchar unsigned char
 #define uint unsigned int
-sbit  DQ=P3^0;        //ÎÂ¶ÈÊäÈë¿Ú
-sbit  DIN=P0^7;       //LEDĞ¡Êıµã¿ØÖÆ
+sbit  DQ=P3^0;        //æ¸©åº¦è¾“å…¥å£
+sbit  DIN=P0^7;       //LEDå°æ•°ç‚¹æ§åˆ¶
 sbit jia=P1^0;
 sbit jian=P1^1;
 
@@ -16,9 +16,9 @@ uchar code ditab[16]={0x00,0x01,0x01,0x02,0x03,0x03,0x04,0x04,0x05,0x06,0x06,0x0
 
 uchar code dis_7[12]={0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0xff,0xbf};
                
-uchar code  scan_con[]={0x7f,0xbf,0xdf,0xef};//0xf7,0xfb,0xfd,0xfe};   // ÁĞÉ¨Ãè¿ØÖÆ×Ö
-uchar data  temp_data[2]={0x00,0x00};               // ¶Á³öÎÂ¶ÈÔİ·Å
-uchar data  display[5]={0x00,0x00,0x00,0x00,0x00};//ÏÔÊ¾µ¥ÔªÊı¾İ,¹²4¸öÊı¾İ,Ò»¸öÔËËãÔİ´æÓÃ
+uchar code  scan_con[]={0x7f,0xbf,0xdf,0xef};//0xf7,0xfb,0xfd,0xfe};   // åˆ—æ‰«ææ§åˆ¶å­—
+uchar data  temp_data[2]={0x00,0x00};               // è¯»å‡ºæ¸©åº¦æš‚æ”¾
+uchar data  display[5]={0x00,0x00,0x00,0x00,0x00};//æ˜¾ç¤ºå•å…ƒæ•°æ®,å…±4ä¸ªæ•°æ®,ä¸€ä¸ªè¿ç®—æš‚å­˜ç”¨
 
 void delay(uint t)
 {
@@ -49,16 +49,16 @@ DQ=0;
 delay(50); // 550us
 DQ=1;   
 delay(6);  // 66us
-presence=DQ; // presence=0¼ÌĞøÏÂÒ»²½
+presence=DQ; // presence=0ç»§ç»­ä¸‹ä¸€æ­¥
    }
-delay(45);    //ÑÓÊ±500us
+delay(45);    //å»¶æ—¶500us
 presence = ~DQ;
 }
 DQ=1;
 } 
  
-/**********18B20Ğ´ÃüÁîº¯Êı*********/
-//Ïò 1-WIRE ×ÜÏßÉÏĞ´Ò»¸ö×Ö½Ú
+/**********18B20å†™å‘½ä»¤å‡½æ•°*********/
+//å‘ 1-WIRE æ€»çº¿ä¸Šå†™ä¸€ä¸ªå­—èŠ‚
 void write_byte(uchar val)
 {
 uchar i;
@@ -67,17 +67,17 @@ for (i=8; i>0; i--) //
 //DQ=0;delay(1); 
 DQ=1;nop_();nop_();
 DQ=0;nop_();nop_();nop_();nop_();
-DQ = val&0x01;      //×îµÍÎ»ÒÆ³ö
+DQ = val&0x01;      //æœ€ä½ä½ç§»å‡º
 delay(6);           //66us
 val=val/2;
-DQ=1;          //ÓÒÒÆÒ»Î»
+DQ=1;          //å³ç§»ä¸€ä½
 }
 DQ = 1;
 delay(1);  
 }
 //
-/*********18B20¶Á1¸ö×Ö½Úº¯Êı********/
-//´Ó×ÜÏßÉÏ¶ÁÈ¡Ò»¸ö×Ö½Ú
+/*********18B20è¯»1ä¸ªå­—èŠ‚å‡½æ•°********/
+//ä»æ€»çº¿ä¸Šè¯»å–ä¸€ä¸ªå­—èŠ‚
 uchar read_byte(void)
 {
 uchar i;
@@ -100,20 +100,20 @@ return(value);
 
 read_temp()
 {
-ow_reset();       //×ÜÏß¸´Î»
-write_byte(0xCC); // ·¢Skip ROMÃüÁî
-write_byte(0xBE); //  ·¢¶ÁÃüÁî
-temp_data[0]=read_byte();  //ÎÂ¶ÈµÍ8Î»
-temp_data[1]=read_byte();  //ÎÂ¶È¸ß8Î»
+ow_reset();       //æ€»çº¿å¤ä½
+write_byte(0xCC); // å‘Skip ROMå‘½ä»¤
+write_byte(0xBE); //  å‘è¯»å‘½ä»¤
+temp_data[0]=read_byte();  //æ¸©åº¦ä½8ä½
+temp_data[1]=read_byte();  //æ¸©åº¦é«˜8ä½
 ow_reset();
 write_byte(0xCC); // Skip ROM
-write_byte(0x44); // ·¢×ª»»ÃüÁî
+write_byte(0x44); // å‘è½¬æ¢å‘½ä»¤
 }
 
-work_temp()//Êı¾İ´¦Àí
+work_temp()//æ•°æ®å¤„ç†
 {
 uchar n=0;       //
-temperature=((temp_data[1]<<8)|temp_data[0])*0.0625; //ÎÂ¶ÈµÄÊµ¼ÊÊ®½øÖÆÊıÖµ
+temperature=((temp_data[1]<<8)|temp_data[0])*0.0625; //æ¸©åº¦çš„å®é™…åè¿›åˆ¶æ•°å€¼
 if(temp_data[1]>127)
  {
  temperature=((temp_data[1]<<8)|temp_data[0]);
@@ -121,7 +121,7 @@ if(temp_data[1]>127)
   temp_data[1]=temperature/256;
   temp_data[0]=temperature%6;
    n=1;
-  }//¸ºÎÂ¶ÈÇó²¹Âë
+  }//è´Ÿæ¸©åº¦æ±‚è¡¥ç 
 
 
 display[4]=temp_data[0]&0x0f;
@@ -132,11 +132,11 @@ display[4]=((temp_data[0]&0xf0)>>4)|((temp_data[1]&0x0f)<<4);
 display[3]=display[4]/100;     //display[1]=display[4]%100/10;
 display[2]=display[4]%100/10;  //display[1]=display[1]%10;
 display[1]=display[4]%100%10;
-display[0]=(temp_data[0]%16)*10/16;//Ğ¡ÊıµãºóÒ»Î»
+display[0]=(temp_data[0]%16)*10/16;//å°æ•°ç‚¹åä¸€ä½
 
-if(display[3]==0){display[3]=0x0a;if(display[2]==0){display[2]=0x0a;}}//×î¸ßÎ»Îª0Ê±¶¼²»ÏÔÊ¾
+if(display[3]==0){display[3]=0x0a;if(display[2]==0){display[2]=0x0a;}}//æœ€é«˜ä½ä¸º0æ—¶éƒ½ä¸æ˜¾ç¤º
 
-if(n==1){display[3]=0x0b;}  //¸ºÎÂ¶ÈÊ±×î¸ßÎ»ÏÔÊ¾"-"
+if(n==1){display[3]=0x0b;}  //è´Ÿæ¸©åº¦æ—¶æœ€é«˜ä½æ˜¾ç¤º"-"
 }
 
 char keyscan()
@@ -157,21 +157,21 @@ char keyscan()
 main()
 {
 	int flag=0;
-Disdata=0xff;    //³õÊ¼»¯¶Ë¿Ú
+Disdata=0xff;    //åˆå§‹åŒ–ç«¯å£
 discan=0xff;
-for(h=0;h<4;h++){display[h]=8;}//¿ª»úÏÔÊ¾8888
-ow_reset();       // ¿ª»úÏÈ×ª»»Ò»´Î
+for(h=0;h<4;h++){display[h]=8;}//å¼€æœºæ˜¾ç¤º8888
+ow_reset();       // å¼€æœºå…ˆè½¬æ¢ä¸€æ¬¡
 write_byte(0xCC); // Skip ROM
-write_byte(0x44); // ·¢×ª»»ÃüÁî
+write_byte(0x44); // å‘è½¬æ¢å‘½ä»¤
 for(h=0;h<250;h++)
-   {scan();}          //¿ª»úÏÔÊ¾"8888"1Ãë
+   {scan();}          //å¼€æœºæ˜¾ç¤º"8888"1ç§’
 while(1)
  {
-  read_temp();         //¶Á³ö18B20ÎÂ¶ÈÊı¾İ
-  work_temp();         //´¦ÀíÎÂ¶ÈÊı¾İ
-  for(h=0;h<250;h++){scan();}          //ÏÔÊ¾ÎÂ¶ÈÖµ1Ãë
+  read_temp();         //è¯»å‡º18B20æ¸©åº¦æ•°æ®
+  work_temp();         //å¤„ç†æ¸©åº¦æ•°æ®
+  for(h=0;h<250;h++){scan();}          //æ˜¾ç¤ºæ¸©åº¦å€¼1ç§’
 	if(keyscan())
-		flag=
+		flag=0;
 	
   }
 }
